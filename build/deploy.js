@@ -19,6 +19,7 @@ import child from 'child_process';
 import gulp from 'gulp';
 import lodash from 'lodash';
 import path from 'path';
+import gutil from 'gulp-util';
 
 import conf from './conf';
 import {multiDest} from './multidest';
@@ -155,4 +156,77 @@ function pushToGcr(version, doneFn) {
  */
 function dockerFile(outputDirs) {
   return gulp.src(path.join(conf.paths.deploySrc, 'Dockerfile')).pipe(multiDest(outputDirs));
+}
+
+/**
+ * Travis CI part underneath manages automatic docker build & push.
+ *
+ * All images are pushed to Docker Hub. Image version is determined in 'travis.yml' based on
+ * '$TRAVIS_PULL_REQUEST' and '$TRAVIS_BRANCH' env. variables.
+ *
+ * NOTE: Only default architecture (amd64) is supported.
+ *
+ * Arguments of 'gulp docker-image' & 'gulp push-to-docker':
+ *  - --pr <number> - creates image name with version set to PR number
+ *  - --canary - creates image name with version set to 'canary'
+ */
+
+/**
+ * Creates canary Docker image for the application for current architecture.
+ * The image is tagged with the image name configuration constant.
+ */
+gulp.task('docker-image', ['build', 'docker-file'], function() {
+  return buildDockerImage([[createImageName(), conf.paths.dist]]);
+});
+
+/**
+ * Pushes compiled docker image for current architecture to Docker Hub.
+ */
+gulp.task('push-to-docker', ['docker-image'], function(doneFn) {
+  pushToDocker(createImageName(), doneFn);
+});
+
+/**
+ * @param {string} imageName
+ * @param {function(?Error=)} doneFn
+ */
+function pushToDocker(imageName, doneFn) {
+  let childTask = child.spawn('docker', ['push', imageName], {stdio: 'inherit'});
+
+  childTask.on('exit', function(code) {
+    if (code === 0) {
+      doneFn();
+    } else {
+      doneFn(new Error(`docker command error, code: ${code}`));
+    }
+  });
+}
+
+/**
+ * Returns value for the process argument key passed to gulp task. Null if there is no value for
+ * given key.
+ *
+ * @param {string} key
+ * @return {string|boolean}
+ */
+function getArg(key) {
+  var index = process.argv.indexOf(key);
+  var next = process.argv[index + 1];
+  return (index < 0) ? null : (!next || next[0] === "-") ? true : next;
+}
+
+/**
+ * Returns name for docker image. By default canary image for Docker Hub repository is returned.
+ *
+ * @return {string}
+ */
+function createImageName() {
+  let prNumber = getArg('--pr');
+  let isCanary = getArg('--canary');
+
+  if(!isCanary) {
+    return `${conf.repo.docker}/${conf.deploy.imageNameBase}:${prNumber}`;
+  }
+
+  return `${conf.repo.docker}/${conf.deploy.imageNameBase}:${conf.deploy.version.canary}`;
 }
