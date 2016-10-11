@@ -20,6 +20,13 @@
 # According to the documentation: http://docs.travis-ci.com/user/docker/
 # sudo is required to enable docker in Travis CI.
 sudo: true
+
+# Secure env variables with docker hub credentials
+env:
+  global:
+    - secure: "FKzhP6ilnKbNwaDGkUmobRKpv7Ux1iJeRScb15XrmGCou81Jh7IA1o3nWX2+sKpJR2otBG71W3jIl0CRXmx2K2+v04ZBRPIH13O6o4+av29R9Zvi7Fopq8G0mFrbzQKXnRdIA7FpUvHK+IEWpUN01a3A+/V+jArT59KOFqW6WJCpbbtO6ZvLjX/JqA0tzPf0talIsw0lne7OeuxPqlqZK1oCilFBcqLQalAiLJMt51niX3ZOJj1GMr0uu+ggNqmE5wQGhvpBlsyUrSIvbgp9YtZLcXS9Z2OLb1EE+QCQPeQJIjKii2RHJcdTJ1ghGCCT84bXZMm9DlNe0IocyOniXFH838KhzdEVSS0Ap0zH3NKwVA1tgjtagBEsiLA/jP181o4oai2IdkFF0+KY3Ln0o5FsaVoFoDnIkb1RIqwURvXEWFkTwa8YtQuzF1DP+k0B7d9MBVOPQW9Fhp92EHJ47ddCNSGw3MSVxcZ3qA915k78Q+BtOZQ6+or/0tE3tnZ6BGcsKFsLTKCBnNgM/klyINMwFc3/XZBL5AU40jxLegLPGEgw6TG4nA7+ABGYZsiMXk7fgw58ZRvBiTe2u1DOjimtJYw8KNgs+UJ26OnPRnZyoNcQ8Rzt918G9F6EKrPNtI26kABFtpfVSmNAYTrIKzEPKLUAJvGxzzXK6uSgc/4=" # Docker user
+    - secure: "FirDZWxaqxWXUZYLUS7hESF2A7pNt5l5ImGFcJhJH+Vkzuo2UaTAmN5pEOukeG26vs2RjIh1tsBVsemGl1siS7AhQtZzIqdj6Fo1Us/efvHMB30L8tmcxMkjrz+CLIoTwFAdQXa97HT2igqZ5wEPl9cF0CQKlXpADL+fUQ+uDSHZQlLI56nwkzJmp3cU51DMPCjHulSGTvYo91HOr1NEkQNIfr63Hf+UxVFVsqHrsUKnOuvKD+J9JlEP2/UjA/A/8tVp0FeZJWUHLyQqbeSAEhKRP2Ix21L9H8mdxUwBCEq/702t0uOO6p10B9rnuwRhHsnz/1yH4AzA1DdrQrMDWNrHJAdcuMAt4TZLd38nYlrQ12q1Rz+npvnlQD7iidWEyPyX29nvud3291X/v7SgjpaeluYsLpw3hw7yXWL0TmBXCFBQqHD9TnK9r5bnLcB31koraNioZ0jLeu4UZA3uVLWxTmx4KxI5mbnE5h2OxoiopoYmsUs+pxIGCEhADqEjGEXhOECsLjvQuruglp234DlJrKdjuE6FtCOzc5ydcKLancg3Dgol5x3k3A1gwEl4QMSDNSAQ2oXOGKimARJLqU+xg5plcWOIDfsnTFhrWtzAsKcuPk+aX3h/uquB3Fd0O7vaIwhUx9d4dE1yKCT3kFzDqv/3cejte6iVteunGsI=" # Docker pass
+
 # Cache downloaded Node.JS modules & Bower frontend dependencies for faster builds.
 cache:
   directories:
@@ -52,5 +59,14 @@ before_script:
 
   - docker --version
 
-script: ./node_modules/.bin/gulp check:local-cluster
+#script: ./node_modules/.bin/gulp check:local-cluster
+
+after_success:
+  - docker login -u $DOCKER_USER -p $DOCKER_PASS
+  - if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
+        ./node_modules/.bin/gulp push-to-docker --pr $TRAVIS_PULL_REQUEST;
+    elif [ "$TRAVIS_BRANCH" = "master" ]; then
+        ./node_modules/.bin/gulp push-to-docker --canary;
+    fi;
+
 after_script: ./node_modules/.bin/gulp coverage-codecov-upload
