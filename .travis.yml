@@ -17,9 +17,12 @@
 # Overview on how to customize the configuration is located at:
 # http://docs.travis-ci.com/user/customizing-the-build/
 
-# According to the documentation: http://docs.travis-ci.com/user/docker/
-# sudo is required to enable docker in Travis CI.
-sudo: true
+# Sudo-enabled Ubuntu Trusty environment. https://docs.travis-ci.com/user/trusty-ci-environment/
+sudo: required
+dist: trusty
+
+# Use Node.js as primary language because Gulp is the build system used in the project.
+language: node_js
 
 # Cache downloaded Node.JS modules & Bower frontend dependencies for faster builds.
 cache:
@@ -27,32 +30,37 @@ cache:
     - node_modules
     - bower_components
     - .tools
-# Use Node.js as primary language because Gulp is the build system used in the project.
-language: node_js
-node_js:
-  - 5.1.1
 
 addons:
   # Run tests that require a browser on SauceLabs CI provider. Learn more at: https://saucelabs.com
   sauce_connect: true
+  # Enables sauce labs for pull requests
+  jwt:
+    secure: THjUBgOJsT45z9Goy7UTjQ+4yvcO4XP2ghd40Q8HXro6MEh5X/DKx/J5LVgDtKaYj/XDto9gWPxlvFK2aEqnmtJkbrGiqTvJX6Lt8o3x0dhcvsrB6XYOLadKDpXq5nQ50idW1W1IoWFk7lNGugxsFY383hziCijU1qbrEc523FVRRvRhGWVmwMySGi50kvU1ez9PyPpF1ljd4A+VUI3DuW/KxvguDewGCsHP9pxBLIzkMeklze4etAeUaF2njBB+0BS6o9rYWncJ0I2i82zZVXEXsvN+ICoRzRcz0Exbxe46xHt/EwgyYGac600UnBxjQt+rVibv+0J7RxYexUfLq74xiiEqT7w+/WLTSMUUTmyOrgl/JvOAeEBhAShcQZ/2ky1tnem4TkT9XAI14vvZVKgWjmRT/rY4nOvZAWwjI9WBrRHcAM8aE+QDvPiuMZE7dXAO8RGWmr9dCiZO8G1VOtDk0okJU57u4PDT3qx0xrR3FBPAGjkTpmfDvSKl7ijV4WN6mOrxWp5dQFvYibQt1jeUcyhmNdW4E+eNd9Ze9R+mqMq1IM5LsLnrMpx8+cCMuLProLgU8SJFznfzhAGKm/w37Xi10nzfwqpAfiZQvRmMM2brt9U0uUwfm2afyoCXIkpiHJSwuqV7eMDAUx4cDG9MNadqRPLhsgrSNyjEScE=
 
-# Docker is required to set up a simple, single node Kubernetes cluster.
-# Local Docker-based cluster is the simplest way to create kubernetes on the host machine.
-services:
-  - docker
+matrix:
+  include:
+    # Job 1 - Local cluster + integration tests
+    - node_js: 7.7.3
+      env: BUILD_SUITE=cluster-test SAUCE_USERNAME=k8s-dashboard-ci
+
+    # Job 2 - Code tests (frontend + backend)
+    - node_js: 7.7.3
+      env: BUILD_SUITE=code-test SAUCE_USERNAME=k8s-dashboard-ci
 
 before_script:
-  # Prepare environment for the Chrome browser. This is required for PRs from forks where
-  # tests do not run on Saucelabs.
-  # TODO(bryk): Make tests run only on Saucelabs.
-  - export CHROME_BIN=chromium-browser
-  - export DISPLAY=:99.0
-  - sh -e /etc/init.d/xvfb start
   # Install go 1.7.1. It is not there by default.
   - eval "$(gimme 1.7.1)"
-
   - docker --version
 
-script: ./node_modules/.bin/gulp ci --heapsterServerHost 'http://localhost:8082'
+script:
+  - 'if [ ${BUILD_SUITE} = "cluster-test" ]; then
+      ./node_modules/.bin/gulp ci --heapsterServerHost "http://localhost:8082";
+    else
+      ./node_modules/.bin/gulp check:code-quality;
+    fi'
 
-after_script: ./node_modules/.bin/gulp coverage-codecov-upload
+after_script:
+  - 'if [ ${BUILD_SUITE} = "code-test" ]; then
+      ./node_modules/.bin/gulp coverage-codecov-upload;
+    fi'
