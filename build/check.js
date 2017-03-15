@@ -40,7 +40,7 @@ gulp.task('check', ['lint', 'build', 'test', 'integration-test:prod']);
  */
 gulp.task('check:local-cluster', ['lint', 'build', 'test', 'local-cluster-integration-test:prod']);
 
-gulp.task('check:local-cluster:ci', ['lint', 'build', 'local-cluster-integration-test:prod']);
+gulp.task('check:local-cluster:ci', ['lint', 'local-cluster-integration-test:prod']);
 
 /**
  * Lints all projects code files.

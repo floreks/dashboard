@@ -58,5 +58,5 @@ before_script:
 
   - docker --version
 
-script: (eval "${TEST_COMMAND})
+script: (eval "${TEST_COMMAND}")
 
