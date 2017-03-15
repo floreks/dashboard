@@ -27,6 +27,7 @@ cache:
     - node_modules
     - bower_components
     - .tools
+
 # Use Node.js as primary language because Gulp is the build system used in the project.
 language: node_js
 node_js:
@@ -41,6 +42,10 @@ addons:
 services:
   - docker
 
+env:
+  - TEST_SUITE=integration
+  - TEST_SUITE=serverless
+
 before_script:
   # Prepare environment for the Chrome browser. This is required for PRs from forks where
   # tests do not run on Saucelabs.
@@ -53,6 +58,14 @@ before_script:
 
   - docker --version
 
-script: ./node_modules/.bin/gulp ci --heapsterServerHost 'http://localhost:8082'
+script:
+  - 'if [ ${TEST_SUITE} = "integration" ]; then
+      ./node_modules/.bin/gulp ci --heapsterServerHost "http://localhost:8082";
+    else
+      ./node_modules/.bin/gulp test;
+    fi'
 
-after_script: ./node_modules/.bin/gulp coverage-codecov-upload
+after_script:
+  - 'if [ ${TEST_SUITE} = "serverless" ]; then
+      ./node_modules/.bin/gulp coverage-codecov-upload;
+    fi'

@@ -21,7 +21,7 @@ import gulp from 'gulp';
 /**
  * Entry point task for CI environments.
  */
-gulp.task('ci', ['check:local-cluster'], (doneFn) => {
+gulp.task('ci', ['check:local-cluster:ci'], (doneFn) => {
   if (process.env.TRAVIS) {
     // Pushe head images when docker user and password are available.
     if (process.env.TRAVIS_PULL_REQUEST === 'false' && process.env.DOCKER_USER &&
