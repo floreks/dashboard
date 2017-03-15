@@ -43,8 +43,8 @@ services:
   - docker
 
 env:
-  - TEST_SUITE=integration
-  - TEST_SUITE=serverless
+  - TEST_COMMAND="./node_modules/.bin/gulp ci --heapsterServerHost \"http://localhost:8082\""
+  - TEST_COMMAND="./node_modules/.bin/gulp test && ./node_modules/.bin/gulp coverage-codecov-upload"
 
 before_script:
   # Prepare environment for the Chrome browser. This is required for PRs from forks where
@@ -58,14 +58,5 @@ before_script:
 
   - docker --version
 
-script:
-  - 'if [ ${TEST_SUITE} = "integration" ]; then
-      ./node_modules/.bin/gulp ci --heapsterServerHost "http://localhost:8082";
-    else
-      ./node_modules/.bin/gulp test;
-    fi'
+script: (eval "${TEST_COMMAND})
 
-after_script:
-  - 'if [ ${TEST_SUITE} = "serverless" ]; then
-      ./node_modules/.bin/gulp coverage-codecov-upload;
-    fi'
