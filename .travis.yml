@@ -44,7 +44,6 @@ services:
   - docker
 
 env:
-  - SAUCE_USERNAME=k8s-dashboard-ci
   - TEST_COMMAND="./node_modules/.bin/gulp ci --heapsterServerHost http://localhost:8082"
   - TEST_COMMAND="./node_modules/.bin/gulp test && ./node_modules/.bin/gulp coverage-codecov-upload"
 
