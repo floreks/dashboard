@@ -44,6 +44,7 @@ services:
   - docker
 
 env:
+  global:
   - SAUCE_USERNAME=k8s-dashboard-ci
   matrix:
   - TEST_COMMAND="./node_modules/.bin/gulp ci --heapsterServerHost http://localhost:8082"
