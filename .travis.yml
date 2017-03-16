@@ -37,14 +37,12 @@ node_js:
 services:
   - docker
 
-
-
 matrix:
   include:
       # Job 1 - Local cluster + integration tests
       - env: BUILD_SUITE=cluster_test
-          global:
-          - SAUCE_USERNAME=k8s-dashboard-ci
+        global:
+        - SAUCE_USERNAME=k8s-dashboard-ci
         addons:
           # Run tests that require a browser on SauceLabs CI provider. Learn more at: https://saucelabs.com
           sauce_connect: true
