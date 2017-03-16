@@ -17,8 +17,8 @@
 # Overview on how to customize the configuration is located at:
 # http://docs.travis-ci.com/user/customizing-the-build/
 
-dist: trusty
-sudo: required
+# Use Node.js as primary language because Gulp is the build system used in the project.
+language: node_js
 
 # Cache downloaded Node.JS modules & Bower frontend dependencies for faster builds.
 cache:
@@ -26,9 +26,6 @@ cache:
     - node_modules
     - bower_components
     - .tools
-
-# Use Node.js as primary language because Gulp is the build system used in the project.
-language: node_js
 
 # Docker is required to set up a simple, single node Kubernetes cluster.
 # Local Docker-based cluster is the simplest way to create kubernetes on the host machine.
@@ -39,6 +36,8 @@ matrix:
   include:
     # Job 1 - Local cluster + integration tests
     - node_js: 5.1.1
+      dist: trusty
+      sudo: required
       env: BUILD_SUITE=cluster-test SAUCE_USERNAME=k8s-dashboard-ci
       addons:
         # Run tests that require a browser on SauceLabs CI provider. Learn more at: https://saucelabs.com
@@ -47,6 +46,8 @@ matrix:
         secure: THjUBgOJsT45z9Goy7UTjQ+4yvcO4XP2ghd40Q8HXro6MEh5X/DKx/J5LVgDtKaYj/XDto9gWPxlvFK2aEqnmtJkbrGiqTvJX6Lt8o3x0dhcvsrB6XYOLadKDpXq5nQ50idW1W1IoWFk7lNGugxsFY383hziCijU1qbrEc523FVRRvRhGWVmwMySGi50kvU1ez9PyPpF1ljd4A+VUI3DuW/KxvguDewGCsHP9pxBLIzkMeklze4etAeUaF2njBB+0BS6o9rYWncJ0I2i82zZVXEXsvN+ICoRzRcz0Exbxe46xHt/EwgyYGac600UnBxjQt+rVibv+0J7RxYexUfLq74xiiEqT7w+/WLTSMUUTmyOrgl/JvOAeEBhAShcQZ/2ky1tnem4TkT9XAI14vvZVKgWjmRT/rY4nOvZAWwjI9WBrRHcAM8aE+QDvPiuMZE7dXAO8RGWmr9dCiZO8G1VOtDk0okJU57u4PDT3qx0xrR3FBPAGjkTpmfDvSKl7ijV4WN6mOrxWp5dQFvYibQt1jeUcyhmNdW4E+eNd9Ze9R+mqMq1IM5LsLnrMpx8+cCMuLProLgU8SJFznfzhAGKm/w37Xi10nzfwqpAfiZQvRmMM2brt9U0uUwfm2afyoCXIkpiHJSwuqV7eMDAUx4cDG9MNadqRPLhsgrSNyjEScE=
     # Job 2 - Code tests (frontend + backend)
     - node_js: 5.1.1
+      dist: trusty
+      sudo: required
       env: BUILD_SUITE=code-test
 
 before_script:
