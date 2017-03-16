@@ -34,8 +34,7 @@ node_js:
 
 addons:
   # Run tests that require a browser on SauceLabs CI provider. Learn more at: https://saucelabs.com
-  sauce_connect:
-    username: k8s-dashboard-ci
+  sauce_connect: true
   jwt:
     secure: ploPkKTbll9UCqi5U/rJR4n3BOL19W+Qyqig6XuHODCo5RI+dmqiZjNSwbNuPo7CrPxcnLqwtpfzLMwWaMZxOKaRgfpWdrFwL2oBNgv4eJWkyavGIHXFPIY3I3bQD9YgvBchHKLDN3aiMZxlScMKxDdhw6bnb4/rHf85LugdQ9tNpPYefiiGJTY0XkNGk9PzalO392HTKJ+TnbCk2/KndJQJMQWfVS89CdNTkPw24HJX4rssv3mfEzW0uyhK1c4+VoBEPZeFwmQLIriVzr02qISLXbMM9o/llhUy/BM+qfsWQBbZezOtECjPfrAjCUtjJ87HCpPeCn8/mZzSxY55Rx5MjMwZnjetWRlQpJ6ieJVe/22wrhZT17trOd41mq12YQYD8/JFyKx/MBgcW2VYefai6yTByNSOAJKkccY1q43pnB0vJXB63WyNVRcARYg1tX+K6LZSmMRkr/yyC59ClVsWbx2Jhye7pnxPW/zQudgEmYYhzE3z7fxR4FXbgGWihUzd1eIvsYztREd+lwhTkDHpvI08NKgmd5N1EuCDyOv/IfaL4cUbBEGPxy/FJ4EjsJF6hnz9vTQvBaSXr7rTlY9Z8WowKmFYakMCNt6VIt/sL24fAyrc3ddeiB9DfAmcIYNQ5OkmmgCpA8oKtcRtuaqcNdjufOtMX2EZo57VmP0=
 
@@ -45,6 +44,7 @@ services:
   - docker
 
 env:
+  - SAUCE_USERNAME=k8s-dashboard-ci
   - TEST_COMMAND="./node_modules/.bin/gulp ci --heapsterServerHost http://localhost:8082"
   - TEST_COMMAND="./node_modules/.bin/gulp test && ./node_modules/.bin/gulp coverage-codecov-upload"
 
