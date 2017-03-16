@@ -179,7 +179,7 @@ export default {
     /**
      * Whether to use sauce labs for running tests that require a browser.
      */
-    useSauceLabs: true,
+    useSauceLabs: !!process.env.TRAVIS,
   },
 
   /**

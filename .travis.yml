@@ -17,9 +17,8 @@
 # Overview on how to customize the configuration is located at:
 # http://docs.travis-ci.com/user/customizing-the-build/
 
-# According to the documentation: http://docs.travis-ci.com/user/docker/
-# sudo is required to enable docker in Travis CI.
-sudo: true
+dist: trusty
+sudo: required
 
 # Cache downloaded Node.JS modules & Bower frontend dependencies for faster builds.
 cache:
@@ -46,7 +45,7 @@ services:
   - docker
 
 env:
-  - TEST_COMMAND="./node_modules/.bin/gulp ci --heapsterServerHost \"http://localhost:8082\""
+  - TEST_COMMAND="./node_modules/.bin/gulp ci --heapsterServerHost http://localhost:8082"
   - TEST_COMMAND="./node_modules/.bin/gulp test && ./node_modules/.bin/gulp coverage-codecov-upload"
 
 before_script:
