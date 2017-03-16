@@ -37,22 +37,20 @@ node_js:
 services:
   - docker
 
+env:
+  global:
+  - SAUCE_USERNAME=k8s-dashboard-ci
+
 matrix:
   include:
-    # Job 1 - Local cluster + integration tests
+      # Job 1 - Local cluster + integration tests
       env: BUILD_SUITE=cluster_test
       addons:
         # Run tests that require a browser on SauceLabs CI provider. Learn more at: https://saucelabs.com
         sauce_connect: true
         jwt:
           secure: THjUBgOJsT45z9Goy7UTjQ+4yvcO4XP2ghd40Q8HXro6MEh5X/DKx/J5LVgDtKaYj/XDto9gWPxlvFK2aEqnmtJkbrGiqTvJX6Lt8o3x0dhcvsrB6XYOLadKDpXq5nQ50idW1W1IoWFk7lNGugxsFY383hziCijU1qbrEc523FVRRvRhGWVmwMySGi50kvU1ez9PyPpF1ljd4A+VUI3DuW/KxvguDewGCsHP9pxBLIzkMeklze4etAeUaF2njBB+0BS6o9rYWncJ0I2i82zZVXEXsvN+ICoRzRcz0Exbxe46xHt/EwgyYGac600UnBxjQt+rVibv+0J7RxYexUfLq74xiiEqT7w+/WLTSMUUTmyOrgl/JvOAeEBhAShcQZ/2ky1tnem4TkT9XAI14vvZVKgWjmRT/rY4nOvZAWwjI9WBrRHcAM8aE+QDvPiuMZE7dXAO8RGWmr9dCiZO8G1VOtDk0okJU57u4PDT3qx0xrR3FBPAGjkTpmfDvSKl7ijV4WN6mOrxWp5dQFvYibQt1jeUcyhmNdW4E+eNd9Ze9R+mqMq1IM5LsLnrMpx8+cCMuLProLgU8SJFznfzhAGKm/w37Xi10nzfwqpAfiZQvRmMM2brt9U0uUwfm2afyoCXIkpiHJSwuqV7eMDAUx4cDG9MNadqRPLhsgrSNyjEScE=
-
-env:
-  global:
-  - SAUCE_USERNAME=k8s-dashboard-ci
-  matrix:
-  - BUILD_SUITE="cluster_test"
-  - BUILD_SUITE="code_test"
+      env: BUILD_SUITE=code_test
 
 before_script:
   # Install go 1.7.1. It is not there by default.
