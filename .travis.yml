@@ -36,7 +36,7 @@ addons:
   # Run tests that require a browser on SauceLabs CI provider. Learn more at: https://saucelabs.com
   sauce_connect: true
   jwt:
-    secure: ploPkKTbll9UCqi5U/rJR4n3BOL19W+Qyqig6XuHODCo5RI+dmqiZjNSwbNuPo7CrPxcnLqwtpfzLMwWaMZxOKaRgfpWdrFwL2oBNgv4eJWkyavGIHXFPIY3I3bQD9YgvBchHKLDN3aiMZxlScMKxDdhw6bnb4/rHf85LugdQ9tNpPYefiiGJTY0XkNGk9PzalO392HTKJ+TnbCk2/KndJQJMQWfVS89CdNTkPw24HJX4rssv3mfEzW0uyhK1c4+VoBEPZeFwmQLIriVzr02qISLXbMM9o/llhUy/BM+qfsWQBbZezOtECjPfrAjCUtjJ87HCpPeCn8/mZzSxY55Rx5MjMwZnjetWRlQpJ6ieJVe/22wrhZT17trOd41mq12YQYD8/JFyKx/MBgcW2VYefai6yTByNSOAJKkccY1q43pnB0vJXB63WyNVRcARYg1tX+K6LZSmMRkr/yyC59ClVsWbx2Jhye7pnxPW/zQudgEmYYhzE3z7fxR4FXbgGWihUzd1eIvsYztREd+lwhTkDHpvI08NKgmd5N1EuCDyOv/IfaL4cUbBEGPxy/FJ4EjsJF6hnz9vTQvBaSXr7rTlY9Z8WowKmFYakMCNt6VIt/sL24fAyrc3ddeiB9DfAmcIYNQ5OkmmgCpA8oKtcRtuaqcNdjufOtMX2EZo57VmP0=
+    secure: THjUBgOJsT45z9Goy7UTjQ+4yvcO4XP2ghd40Q8HXro6MEh5X/DKx/J5LVgDtKaYj/XDto9gWPxlvFK2aEqnmtJkbrGiqTvJX6Lt8o3x0dhcvsrB6XYOLadKDpXq5nQ50idW1W1IoWFk7lNGugxsFY383hziCijU1qbrEc523FVRRvRhGWVmwMySGi50kvU1ez9PyPpF1ljd4A+VUI3DuW/KxvguDewGCsHP9pxBLIzkMeklze4etAeUaF2njBB+0BS6o9rYWncJ0I2i82zZVXEXsvN+ICoRzRcz0Exbxe46xHt/EwgyYGac600UnBxjQt+rVibv+0J7RxYexUfLq74xiiEqT7w+/WLTSMUUTmyOrgl/JvOAeEBhAShcQZ/2ky1tnem4TkT9XAI14vvZVKgWjmRT/rY4nOvZAWwjI9WBrRHcAM8aE+QDvPiuMZE7dXAO8RGWmr9dCiZO8G1VOtDk0okJU57u4PDT3qx0xrR3FBPAGjkTpmfDvSKl7ijV4WN6mOrxWp5dQFvYibQt1jeUcyhmNdW4E+eNd9Ze9R+mqMq1IM5LsLnrMpx8+cCMuLProLgU8SJFznfzhAGKm/w37Xi10nzfwqpAfiZQvRmMM2brt9U0uUwfm2afyoCXIkpiHJSwuqV7eMDAUx4cDG9MNadqRPLhsgrSNyjEScE=
 
 # Docker is required to set up a simple, single node Kubernetes cluster.
 # Local Docker-based cluster is the simplest way to create kubernetes on the host machine.
@@ -44,6 +44,8 @@ services:
   - docker
 
 env:
+  - SAUCE_USERNAME=k8s-dashboard-ci
+  matrix:
   - TEST_COMMAND="./node_modules/.bin/gulp ci --heapsterServerHost http://localhost:8082"
   - TEST_COMMAND="./node_modules/.bin/gulp test && ./node_modules/.bin/gulp coverage-codecov-upload"
 
