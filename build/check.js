@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// TEST
+
 /**
  * @fileoverview Gulp tasks for checking and validating the code or a commit.
  */
