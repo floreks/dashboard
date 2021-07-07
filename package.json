@@ -41,16 +41,16 @@
     "check:codegen": "aio/scripts/verify-codegen.sh",
     "check:frontend": "concurrently \"npm run check:frontend:ts\" \"npm run check:frontend:scss\" \"npm run check:frontend:html\"",
     "check:frontend:ts": "gts lint",
-    "check:frontend:scss": "./aio/scripts/format.sh --styles --check && ./node_modules/sass-lint/bin/sass-lint.js -c .sass-lint.yml 'src/app/frontend/**/*.scss' -v -q",
-    "check:frontend:html": "./aio/scripts/format.sh --html --check",
+    "check:frontend:scss": "stylelint \"src/**/*.scss\"",
+    "check:frontend:html": "./aio/scripts/format-html.sh --check",
     "check:license": "license-check-and-add check",
     "check:i18n": "aio/scripts/pre-commit-i18n.sh",
     "fix": "concurrently \"npm run fix:backend\" \"npm run fix:frontend\" \"npm run fix:license\" \"npm run fix:i18n\"",
     "fix:backend": "golangci-lint run -c .golangci.yml --fix ./src/app/backend/...",
     "fix:frontend": "concurrently \"npm run fix:frontend:ts\" \"npm run fix:frontend:scss\" \"npm run fix:frontend:html\"",
     "fix:frontend:ts": "gts fix",
-    "fix:frontend:scss": "scssfmt -r 'src/**/*.scss'",
-    "fix:frontend:html": "./aio/scripts/format.sh --html",
+    "fix:frontend:scss": "stylelint \"src/**/*.scss\" --fix",
+    "fix:frontend:html": "./aio/scripts/format-html.sh",
     "fix:license": "license-check-and-add add",
     "fix:i18n": "npm run check:i18n",
     "clean": "rm -rf .go_workspace .tmp coverage dist npm-debug.log",
@@ -63,7 +63,7 @@
       "gts fix"
     ],
     "src/**/*.scss": [
-      "scssfmt"
+      "stylelint --fix"
     ],
     "src/**/*.go": [
       "./aio/scripts/pre-commit-golangci-lint.sh"
@@ -103,7 +103,7 @@
     "@swimlane/ngx-charts": "17.0.1",
     "ace-builds": "1.4.12",
     "angular-page-visibility": "11.0.0",
-    "ansi-to-html": "0.6.15",
+    "ansi-to-html": "0.7.0",
     "c3": "0.7.20",
     "core-js": "3.15.2",
     "d3": "6.7.0",
@@ -119,7 +119,7 @@
     "rxjs-compat": "6.6.7",
     "sockjs-client": "1.5.1",
     "strip-ansi": "6.0.0",
-    "systemjs": "6.10.1",
+    "systemjs": "6.10.2",
     "truncate-url": "1.0.0",
     "tslib": "2.3.0",
     "web-animations-js": "2.3.2",
@@ -138,26 +138,26 @@
     "@cypress/webpack-preprocessor": "5.9.1",
     "@types/c3": "0.7.5",
     "@types/d3": "7.0.0",
-    "@types/d3-scale": "4.0.0",
+    "@types/d3-scale": "4.0.1",
     "@types/file-saver": "2.0.2",
     "@types/jasmine": "3.7.7",
     "@types/jasminewd2": "2.0.8",
     "@types/jest": "26.0.23",
-    "@types/js-yaml": "4.0.1",
+    "@types/js-yaml": "4.0.2",
     "@types/lodash": "4.14.170",
-    "@types/node": "15.12.5",
+    "@types/node": "16.0.0",
     "codelyzer": "6.0.2",
     "concurrently": "6.2.0",
     "cypress": "7.6.0",
     "del": "6.0.0",
-    "eslint": "7.28.0",
+    "eslint": "7.30.0",
     "eslint-plugin-rxjs": "3.3.4",
     "git-describe": "4.0.4",
     "gts": "3.1.0",
     "gulp": "4.0.2",
     "gulp-filter": "7.0.0",
-    "husky": "6.0.0",
-    "jasmine-core": "3.7.1",
+    "husky": "7.0.0",
+    "jasmine-core": "3.8.0",
     "jasmine-spec-reporter": "7.0.0",
     "jest": "27.0.6",
     "jest-preset-angular": "9.0.4",
@@ -173,17 +173,19 @@
     "raw-loader": "4.0.2",
     "run-node": "2.0.0",
     "sass": "1.35.1",
-    "sass-lint": "1.13.1",
     "sass-loader": "12.1.0",
-    "scssfmt": "1.0.7",
     "semver": "7.3.5",
     "source-map-explorer": "2.5.2",
+    "stylelint": "13.13.1",
+    "stylelint-config-standard": "22.0.0",
+    "stylelint-no-unsupported-browser-features": "5.0.1",
+    "stylelint-order": "4.1.0",
     "tar": "6.1.0",
     "through2": "4.0.2",
     "ts-jest": "27.0.3",
     "ts-loader": "9.2.3",
     "ts-node": "10.0.0",
-    "typescript": "4.2.4",
+    "typescript": "4.3.5",
     "wait-on": "6.0.0",
     "webpack-dev-server": "3.11.2"
   },
@@ -246,6 +248,48 @@
     "aio/*",
     "src/app/frontend/common/services/global/history.ts"
   ],
+  "stylelint": {
+    "extends": "stylelint-config-standard",
+    "plugins": [
+      "stylelint-no-unsupported-browser-features",
+      "stylelint-order"
+    ],
+    "rules": {
+      "at-rule-no-unknown": null,
+      "font-family-no-missing-generic-family-keyword": null,
+      "no-invalid-position-at-import-rule": null,
+      "no-descending-specificity": null,
+      "number-leading-zero": null,
+      "order/order": [
+        "dollar-variables",
+        {
+          "type": "at-rule",
+          "name": "extend"
+        },
+        {
+          "type": "at-rule",
+          "name": "include"
+        },
+        "declarations",
+        {
+          "type": "at-rule",
+          "name": "include",
+          "hasBlock": true
+        },
+        "at-rules",
+        "rules"
+      ],
+      "order/properties-alphabetical-order": true,
+      "plugin/no-unsupported-browser-features": [
+        true,
+        {
+          "severity": "warning"
+        }
+      ],
+      "selector-pseudo-element-no-unknown": null,
+      "selector-type-no-unknown": null
+    }
+  },
   "browserslist": [
     "> 0.5%",
     "last 2 versions",
