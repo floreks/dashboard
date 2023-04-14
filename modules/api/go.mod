@@ -5,7 +5,7 @@ go 1.19
 require (
 	github.com/docker/distribution v2.8.1+incompatible
 	github.com/emicklei/go-restful/v3 v3.10.2
-	github.com/prometheus/client_golang v1.14.0
+	github.com/prometheus/client_golang v1.15.0
 	github.com/spf13/pflag v1.0.5
 	golang.org/x/net v0.9.0
 	gopkg.in/igm/sockjs-go.v2 v2.1.0
@@ -48,6 +48,7 @@ require (
 	github.com/prometheus/client_model v0.3.0 // indirect
 	github.com/prometheus/common v0.42.0 // indirect
 	github.com/prometheus/procfs v0.9.0 // indirect
+	github.com/rogpeppe/go-internal v1.10.0 // indirect
 	github.com/stretchr/testify v1.8.2 // indirect
 	golang.org/x/crypto v0.7.0 // indirect
 	golang.org/x/oauth2 v0.6.0 // indirect
