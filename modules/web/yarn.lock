@@ -325,15 +325,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/common@npm:15.2.7":
-  version: 15.2.7
-  resolution: "@angular/common@npm:15.2.7"
+"@angular/common@npm:16.2.12":
+  version: 16.2.12
+  resolution: "@angular/common@npm:16.2.12"
   dependencies:
     tslib: ^2.3.0
   peerDependencies:
-    "@angular/core": 15.2.7
+    "@angular/core": 16.2.12
     rxjs: ^6.5.3 || ^7.4.0
-  checksum: 5eac9700caff18e35ad36beb934b198a490722f1abcf52bf00f96731a049951ca932faa1f3b928110414dd75dfb40d29c3646e58553678953beacfe7c953df94
+  checksum: 3bf3763938425037e28c3cc09b927db161c6fb7d53a5bf0c0c2917902a4e6e9c05906cb5634916ce41e110364768c6b672a4332735b4e4d11d3b3420b65707d9
   languageName: node
   linkType: hard
 
@@ -10922,7 +10922,7 @@ __metadata:
     "@angular/animations": 15.2.7
     "@angular/cdk": 15.2.7
     "@angular/cli": 15.2.6
-    "@angular/common": 15.2.7
+    "@angular/common": 16.2.12
     "@angular/compiler": 15.2.7
     "@angular/compiler-cli": 15.2.7
     "@angular/core": 15.2.7
